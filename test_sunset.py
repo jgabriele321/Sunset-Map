@@ -134,22 +134,21 @@ class OutputTestSunsetCalculator(unittest.TestCase):
 async def run_async_tests():
     """Run async tests."""
     async_suite = unittest.TestLoader().loadTestsFromTestCase(AsyncTestSunsetCalculator)
-    runner = unittest.TextTestRunner()
-    await asyncio.gather(*(test._callTestMethod() for test in async_suite._tests))
+    for test in async_suite._tests:
+        await test.test_api_connection()
+    print("Async tests completed successfully!")
 
 if __name__ == "__main__":
     # Run synchronous tests
-    print("Running synchronous tests...")
+    print("\nRunning synchronous tests...")
     sync_suite = unittest.TestLoader().loadTestsFromTestCase(TestSunsetCalculator)
-    unittest.TextTestRunner().run(sync_suite)
+    unittest.TextTestRunner(verbosity=2).run(sync_suite)
     
     # Run output tests with small subset
     print("\nRunning output tests with small subset...")
     output_suite = unittest.TestLoader().loadTestsFromTestCase(OutputTestSunsetCalculator)
-    unittest.TextTestRunner().run(output_suite)
+    unittest.TextTestRunner(verbosity=2).run(output_suite)
     
     # Run async tests
     print("\nRunning asynchronous tests...")
-    asyncio.run(run_async_tests())
-    
-    print("\nAll tests completed!") 
+    asyncio.run(run_async_tests()) 
